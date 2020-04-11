@@ -1,0 +1,106 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Services
+@inherits UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+    if (Members.IsHq() == false)
+    {
+        Response.Redirect("/");
+    }
+    var packagesService = new PackagesService();
+
+    var currentDateTime = DateTime.Now;
+    var downloadsThisMonth = packagesService.GetTopXMonthlyPackageDownloads(currentDateTime, 30);
+    var downloadsLastMonth = packagesService.GetTopXMonthlyPackageDownloads(currentDateTime.AddMonths(-1), 30);
+    var downloadsPastYear = packagesService.GetTopXYearlyPackageDownloads(30);
+}
+
+    <div id="body" class="page markdown-syntax">
+        <div>
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+        </div>
+
+        @RenderTable(@DateTime.Now.AddMonths(0).ToString("Y"), downloadsThisMonth)
+        @RenderTable(@DateTime.Now.AddMonths(-1).ToString("Y"), downloadsLastMonth)
+        @RenderTable($"{@DateTime.Now.AddMonths(-12):Y} - {@DateTime.Now.AddMonths(0):Y}", downloadsPastYear)
+    </div>
+
+<style type="text/css">
+    .page, .container {
+        max-width: none;
+    }
+
+    .overview {
+        width: 1800px;
+    }
+
+    .overview td {
+        font-size: 14px;
+        vertical-align: top;
+        padding: 6px 6px;
+    }
+
+    .overview td img {
+        margin: 0;
+        max-width: none;
+    }
+
+    .overview td a {
+        color: #FF6E00;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .overview td.author img {
+        width: 40px;
+        height: 40px;
+        margin-left: 2px;
+    }
+
+    .overview td.assignees a {
+        float: left;
+    }
+
+    .overview td.assignees img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .overview small, .overview small.comment {
+        font-size: 12px;
+    }
+</style>
+
+@helper RenderTable(string headlineTime, IEnumerable<PackagesService.PackageDownloads> data)
+{
+    <h1>Top 30 packages by downloads - @headlineTime</h1>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="overview">
+                        <tr>
+                            <td nowrap><strong>Package ID</strong></td>
+                            <td nowrap><strong>Create Date</strong></td>
+                            <td nowrap><strong>Author</strong></td>
+                            <td nowrap><strong>Downloads</strong></td>
+                        </tr>
+                        @foreach (var package in data)
+                        {
+                            var node = Umbraco.TypedContent(package.ProjectId);
+                            var owner = "";
+                            owner = node.GetPropertyValue("owner") != null ? Members.GetById(node.GetPropertyValue<int>("owner")).Name : "Owner is not set";
+
+                            <tr>
+                                <td><a href="@node.Url" target="_blank">@node.Name</a></td>
+                                <td nowrap>@node.CreateDate</td>
+                                <td nowrap>@owner</td>
+                                <td nowrap>@package.DownloadCount</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+}

@@ -1,9 +1,11 @@
+@using System.Configuration
 @using OurUmbraco.Our.Controllers
 @using reCAPTCHA.MVC
 @inherits UmbracoViewPage<OurUmbraco.Our.Models.RegisterModel>
 @{
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
+    var apiKey = ConfigurationManager.AppSettings["GoogleServerKey"];
 }
 
 <div class="profile-settings">
@@ -37,13 +39,13 @@
 
             <div class="profile-input" id="twitter-alias">
                 @Html.LabelFor(m => m.TwitterAlias)
-                <em>Are you on Twitter? We have an active Twitter community. Follow the <a href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd" target="_blank">umbraco search term</a> and join the conversation.</em>
+                <em>Are you on Twitter? We have an active Twitter community. Follow the <a href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd" target="_blank" rel="noreferrer noopener">umbraco search term</a> and join the conversation.</em>
                 @Html.TextBoxFor(m => m.TwitterAlias)
             </div>
 
             <div class="profile-input" id="github-alias">
                 @Html.LabelFor(m => m.GitHubUsername)
-                <em>We'd love to show of your GitHub contributions to the community.</em>
+                <em>We'd love to show off your GitHub contributions to the community.</em>
                 @Html.TextBoxFor(m => m.GitHubUsername)
             </div>
 
@@ -78,5 +80,5 @@
 </div>
 
 <script type="text/javascript" src="/scripts/register.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASbfPWsRxZgSnmH2jaQlrWNE7VTV5QuwI&libraries=places&callback=initAutocomplete"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&libraries=places&callback=initAutocomplete"></script>
 <link rel="stylesheet" type="text/css" href="/css/register.css" />

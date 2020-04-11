@@ -3,8 +3,6 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = null;
-    var cookiesAllowed = Request.Cookies["cookieconsent_status"] != null && Request.Cookies["cookieconsent_status"].Value == "allow";
-
     var model = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
     var bodyCss =
         model.Level > 2 && model.AncestorOrSelf(3).Id == 1057
@@ -33,21 +31,19 @@
     Html.RequiresJs("~/assets/js/app.min.js");
     Html.RequiresJs("~/assets/js/editor.min.js");
 }<!doctype html>
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="alternate" type="application/rss+xml" title="Latest packages" href="//our.umbraco.org/rss/projects" />
-    <link rel="alternate" type="application/rss+xml" title="Package updates" href="//our.umbraco.org/rss/projectsupdate" />
-    <link rel="alternate" type="application/rss+xml" title="Active forum topics" href="//our.umbraco.org/rss/activetopics" />
-    <link rel="alternate" type="application/rss+xml" title="Community blogs" href="//pipes.yahoo.com/pipes/pipe.run?_id=8llM7pvk3RGFfPy4pgt1Yg&_render=rss" />
-
-    <link rel="search" type="application/opensearchdescription+xml" title="our.umbraco.org" href="/scripts/OpenSearch.xml">
+    <link rel="alternate" type="application/rss+xml" title="Latest packages" href="//our.umbraco.com/rss/projects" />
+    <link rel="alternate" type="application/rss+xml" title="Package updates" href="//our.umbraco.com/rss/projectsupdate" />
+    <link rel="alternate" type="application/rss+xml" title="Active forum topics" href="//our.umbraco.com/rss/activetopics" />
+    
+    <link rel="search" type="application/opensearchdescription+xml" title="our.umbraco.com" href="/scripts/OpenSearch.xml">
 
     <!-- Application name -->
     <meta name="application-name" content="Our Umbraco" />
@@ -64,150 +60,124 @@
 
     <link rel="icon" type="image/png" href="/assets/images/app-icons/favicon.png">
 
-    <title>
-        @{
-            var title = string.Empty;
-            var navigationTitle = HttpContext.Current.Items["topicTitle"];
-            if (navigationTitle != null)
-            {
-                title = navigationTitle.ToString();
+    @if (IsSectionDefined("SeoMetaData"))
+    {
+        @RenderSection("SeoMetaData", false)
+    }
+    else
+    {
+        <title>
+            @{
+                var title = string.Empty;
+                var navigationTitle = HttpContext.Current.Items["topicTitle"];
+                if (navigationTitle != null)
+                {
+                    title = navigationTitle.ToString();
+                }
+
+                if (string.IsNullOrWhiteSpace(title) == false)
+                {
+                    <text>@title - </text>
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(title) == false)
-            {
-                <text>@title - </text>
-            }
-        }
+            @Model.Content.Name - our.umbraco.com
+        </title>
+        <meta name="description" content="">
+    }
 
-        @Model.Content.Name - our.umbraco.org
-    </title>
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/scripts/jquery-1.9.1.min.js"></script>
 
     @Html.Partial("~/Views/Partials/Community/JsValues.cshtml")
 
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-W9TZ2XW');</script>
+    <!-- End Google Tag Manager -->
+
     @Html.RenderCssHere()
     @RenderSection("HeadCssScripts", false)
-
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
-	<script>
-		window.addEventListener("load",
-			function () {
-				window.cookieconsent.initialise({
-					"palette": {
-						"popup": {
-							"background": "#252e39"
-						},
-						"button": {
-							"background": "#14a7d0"
-						}
-					},
-					"position": "bottom-left",
-					"type": "opt-in",
-					"content": {
-						"message": "This website uses cookies to gather some anonymous statistics, is that okay with you?",
-						"dismiss": "No thanks",
-						"allow": "Sure, go ahead.",
-						"href": "https://our.umbraco.org/privacy-policy/"
-					}
-				});
-			});
-	</script>	
-	
-    @if (cookiesAllowed)
-    {
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120590-4"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            gtag('js', new Date());
-            gtag('config', 'UA-120590-4', { 'anonymize_ip': true });
-            gtag('config', 'GTM-NQ556HD', { 'anonymize_ip': true });
-        </script>
-    }
 </head>
 
 <body class="@bodyCss">
-    @Html.Partial("~/Views/Partials/Members/QuickMenu.cshtml")
 
-    <div class="wrapper">
-        <header>
-            <div class="navigation">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <a class="logo" href="/">Our Umbraco</a>
-                        </div>
-                        <div id="toggle" class="menu-toggle">
-                            <a href="#" class="toggle cross"><span></span></a>
-                        </div>
-                        <nav class="col-md-9">
-                            @Html.Partial("~/Views/Partials/Navigation/TopNavigation.cshtml")
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </header>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W9TZ2XW"
+                  height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
-        @{
-            if (memberIsBlocked == false)
-            {
-                @Html.Partial("~/Views/Partials/Global/AlertBar.cshtml")
-                @RenderSection("Search", false)
-                @RenderBody()
-            }
-            else
-            {
-                <section class="forum">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h1 class="text-center">Computer says no</h1>
-                                <p>Unfortunaly, it seems that your account has been blocked.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            }
-        }
+@Html.Partial("~/Views/Partials/Members/QuickMenu.cshtml")
 
-        <footer>
+<div class="wrapper">
+    <header>
+        <div class="navigation">
             <div class="container">
                 <div class="row">
-                    <div class="col-xs-12">
-                        <p><a href="/code-of-conduct">Code Of Conduct</a> - <a href="/privacy-policy">Privacy Policy</a></p>
-                        <p>&nbsp;</p>
-                        Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
-                        @if (HttpContext.Current != null && HttpContext.Current.Request.UserAgent != null && HttpContext.Current.Request.UserAgent.ToLower().Contains("googlebot"))
-                        {
-                            <text>This site is running Umbraco.</text>
-                        }
-                        else
-                        {
-                            <text>This site is running</text>
-                            <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
-                        }
+                    <div class="col-md-3">
+                        <a class="logo" href="/">Our Umbraco</a>
                     </div>
+                    <div id="toggle" class="menu-toggle">
+                        <a href="#" class="toggle cross"><span></span></a>
+                    </div>
+                    <nav class="col-md-9">
+                        @Html.Partial("~/Views/Partials/Navigation/TopNavigation.cshtml")
+                    </nav>
                 </div>
             </div>
-        </footer>
+        </div>
+    </header>
 
-    </div>
-    <!--.wrapper-->
+    @{
+        if (memberIsBlocked == false)
+        {
+            @Html.Partial("~/Views/Partials/Global/AlertBar.cshtml")
+            @RenderSection("Search", false)
+            @RenderBody()
+        }
+        else
+        {
+            <section class="forum">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h1 class="text-center">Computer says no</h1>
+                            <p>Unfortunately, it seems that your account has been blocked.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
 
-    @Html.RenderJsHere()
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p><a href="/code-of-conduct">Code Of Conduct</a> - <a href="/privacy-policy">Privacy Policy</a></p>
+                    <p>&nbsp;</p>
+                    Our.umbraco.com is the community mothership for <a href="https://umbraco.com" target="_blank" rel="noopener noreferrer">Umbraco</a>, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
+                    @if (HttpContext.Current != null && HttpContext.Current.Request.UserAgent != null && HttpContext.Current.Request.UserAgent.ToLower().Contains("googlebot"))
+                    {
+                        <text>This site is running Umbraco.</text>
+                    }
+                    else
+                    {
+                        <text>This site is running</text>
+                        <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
+                    }
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <script type="text/javascript">
-        classOnScroll('header', 'sticky', 10);
-    </script>
+</div>
+<!--.wrapper-->
 
-    @RenderSection("EndScripts", false)
+@Html.RenderJsHere()
+
+@RenderSection("EndScripts", false)
 </body>
 </html>

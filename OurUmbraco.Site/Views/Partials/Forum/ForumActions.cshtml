@@ -8,7 +8,7 @@
         if (Model.Content.AncestorOrSelfIsArchived() == false && Model.Content.NewTopicsAllowed())
         {
             <a href="#" class="button create-new-thread" data-controller="topic">
-                <i class="icon-Add"></i><span>Create new</span>
+                <i class="icon-Add"></i><span>Ask a question</span>
             </a>
         }
 
@@ -29,7 +29,7 @@
     else
     {
         <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login">
-            <i class="icon-Add"></i><span>Sign in to create a topic</span>
+            <i class="icon-Add"></i><span>Sign in to ask a question</span>
         </a>
     }
 

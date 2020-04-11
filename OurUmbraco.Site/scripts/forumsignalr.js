@@ -1,4 +1,4 @@
-﻿function startNotifier(memberId, memberName, modelId) {
+﻿function startNotifier(memberId, memberName, modelId, isMemberAdmin) {
     var lastActivity = null;
 
     // if it's been long since last activity, we'll remove the "working on reply" box
@@ -71,7 +71,9 @@
                 $("#reply-is-coming").fadeOut();
 
                 data.canHaveChildren = true;
+                data.isLoggedIn = memberId > 0;
                 data.isCommentOwner = data.authorId === memberId;
+                data.canManageComment = isMemberAdmin || data.isCommentOwner;
 
                 if (data.isSpam === false || data.isCommentOwner) {
                     var template = $("#comment-template").html();
@@ -100,7 +102,7 @@
                         type: "success"
                     });
 
-                    $("#comment-" + data.id).css("background", "rgba(14, 216, 61, 0.31)").fadeIn(200);
+                    $("#comment-" + data.id).addClass("new-signalr").fadeIn(200);
                     notify.get().css("cursor", "pointer").click(function(e) {
                         $(document).scrollTop($("#comment-" + data.id).offset().top - 80);
                         $("#comment-" + data.id).hide();
@@ -110,7 +112,7 @@
             });
         };
 
-        forum.client.returnEditedComment = function (data) {
+        forum.client.returnEditedComment = function(data) {
             if (data.topicId !== modelId) {
                 return;
             }
@@ -118,23 +120,23 @@
             container.html(data.body);
             var notify = new PNotify({
                 title: "Post was edited",
-                text: "Jump to modified answer",
+                text: "Jump to modified answer"
             });
 
-            $("#comment-" + data.id).css("background", "rgba(216, 209, 14, 0.31)").fadeIn(200);
-            notify.get().css("cursor", "pointer").click(function (e) {
+            $("#comment-" + data.id).addClass("edit-signalr").fadeIn(200);
+            notify.get().css("cursor", "pointer").click(function(e) {
                 $(document).scrollTop($("#comment-" + data.id).offset().top - 80);
                 $("#comment-" + data.id).hide();
                 $("#comment-" + data.id).fadeIn();
 
             });
-        }
+        };
 
-        forum.client.notify = function () {
+        forum.client.notify = function() {
             if ($("#wmd-input").val().length > 50) {
                 forum.server.someoneIsTyping(modelId, memberId, memberName);
             }
-        }
+        };
 
         var notifyChange = _.debounce(forum.client.notify, 500, { leading: true, trailing: false });
         // Start the connection.

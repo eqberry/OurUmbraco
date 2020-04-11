@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Hosting;
 using Examine;
 using Hangfire;
@@ -9,12 +13,18 @@ using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
+using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
 using Umbraco.Core;
+using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
+using Umbraco.Web;
+using Umbraco.Web.Security;
 
 namespace OurUmbraco.NotificationsCore.Notifications
 {
+    using OurUmbraco.Community.Nuget;
+
     public class ScheduleHangfireJobs
     {
         public void ScheduleTopics()
@@ -46,7 +56,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateMeetupStats()
         {
-            RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.MinuteInterval(15));
+            RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.HourInterval(2));
         }
 
         public void UpdateGitHubContributorsJsonFile()
@@ -104,12 +114,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var service = new CommunityVideosService();
             service.UpdateYouTubePlaylistVideos();
         }
-        
+
         public void GetGitHubPullRequests()
         {
             RecurringJob.AddOrUpdate(() => UpdatePullRequests(), Cron.HourInterval(1));
         }
-        
+
         public void UpdatePullRequests()
         {
             var service = new GitHubService();
@@ -122,7 +132,80 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var karmaService = new KarmaService();
             RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
         }
-        
+
+        public void GenerateReleasesCache(PerformContext context)
+        {
+            var releasesService = new ReleasesService();
+            RecurringJob.AddOrUpdate(() => releasesService.GenerateReleasesCache(context), Cron.HourInterval(1));
+        }
+
+        public void UpdateGitHubIssues(PerformContext context)
+        {
+            var repoManagementService = new RepositoryManagementService();
+            var repositories = repoManagementService.GetAllPublicRepositories();
+
+            var gitHubService = new GitHubService();
+            foreach (var repository in repositories)
+            {
+                RecurringJob.AddOrUpdate($"[IssueTracker] Update {repository.Name}", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+            }
+        }
+
+        public void UpdateAllIssues(PerformContext context)
+        {
+            var repoManagementService = new RepositoryManagementService();
+            var repositories = repoManagementService.GetAllPublicRepositories();
+
+            var gitHubService = new GitHubService();
+            foreach (var repository in repositories)
+            {
+                //RecurringJob.AddOrUpdate($"[IssueTracker] FullUpdate {repository.Name}", () => gitHubService.UpdateReviews(context, repository), Cron.Yearly(2, 31));
+            }
+        }
+
+        public void GetAllGitHubLabels(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(12));
+        }
+
+        public void AddCommentToUpForGrabsIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToUpForGrabsIssues(context), Cron.MinuteInterval(10));
+        }
+
+        public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MinuteInterval(10));
+        }
+
+        public void AddCommentToStateHQDiscussionIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToStateHQDiscussionIssues(context), Cron.MinuteInterval(10));
+        }
+
+        public void NotifyUnmergeablePullRequests(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.NotifyUnmergeablePullRequests(context), Cron.MonthInterval(12));
+        }
+
+        public void CheckContributorBadge(PerformContext context)
+        {
+            var contributors = new ContributorBadgeService();
+            RecurringJob.AddOrUpdate(() => contributors.CheckContributorBadges(context), Cron.MinuteInterval(5));
+        }
+
+        public void GetNugetDownloads(PerformContext content)
+        {
+            var nugetService = new NugetPackageDownloadService();
+
+            RecurringJob.AddOrUpdate(() => nugetService.ImportNugetPackageDownloads(), Cron.Daily);
+        }
+
     }
 
     public class ReminderTopic

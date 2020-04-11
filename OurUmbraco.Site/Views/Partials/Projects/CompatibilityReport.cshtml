@@ -58,9 +58,9 @@
 </script>
 
 <div class="package-compatibility">
-    <h3>Project Compatibility</h3>
+    <h3>Package Compatibility</h3>
 
-    <small>This project is compatible with the following versions as reported by community members who have downloaded this package:</small>
+    <small>This package is compatible with the following versions as reported by community members who have downloaded this package:</small>
 
     <div class="package-compatibility-versions">
         <div class="versions">
@@ -75,7 +75,7 @@
             @foreach (var ver in Model.VersionCompatibilities)
             {
                 <div>
-                    <input type="hidden" value="@ver.Version" />
+                    <input type="hidden" value="@(ver.Version.Replace("Version ", string.Empty))" />
                     <span class="report-compat-item" style="display: none;">
                         <select>
                             <option value="0">Not sure</option>
@@ -97,22 +97,15 @@
     </div>
 
     @if (Model.CurrentMemberIsLoggedIn)
-    {
-        if (Model.CurrentMemberHasDownloaded)
-        {
-            <div id="reportingTools">
-                <a href="#" id="reportCompatibility">Report compatibility</a>
-                <div style="display: none;" id="reportCompatibilityPanel">
-                    <a href="#" id="cancelCompatibility">Cancel</a> or <button>Submit report</button>
-                </div>
-                <br />
+    {        
+        <div id="reportingTools">
+            <a href="#" id="reportCompatibility">Report compatibility</a>
+            <div style="display: none;" id="reportCompatibilityPanel">
+                <a href="#" id="cancelCompatibility">Cancel</a> or <button>Submit report</button>
             </div>
-        }
-        else
-        {
-            <p><small>You need to download this package before you can report on it's compatibility</small></p>
-        }
-    }
+            <br />
+        </div>
+     }
     else
     {
         <p><small>You must login before you can report on package compatibility.</small></p>

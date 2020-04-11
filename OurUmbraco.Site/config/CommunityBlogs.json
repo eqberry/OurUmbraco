@@ -1,6 +1,24 @@
 ﻿{
   "blogs": [
     {
+      "id": "91660aac-e27d-445b-b3a8-d54876b2df04",
+      "checkTitles": false,
+      "title": "Jacker.io Umbraco Articles",
+      "url": "https://jacker.io/tutorials-articles/",
+      "rss": "https://jacker.io/rss",
+      "logo": "https://jacker.io/jacker-io-umbraco-logo.png",
+      "memberId": 23434
+    },
+    {
+      "id": "ad10ed4d-d22e-405f-8588-ba8a3d1592cf",
+      "checkTitles": false,
+      "title": "Rasolo's blog",
+      "url": "http://rasolo.azurewebsites.net/blogs/umbraco/",
+      "rss": "http://rasolo.azurewebsites.net/blogs/umbraco/feed",
+      "logo": "http://rasolo.azurewebsites.net/media/5a1pqhxs/rasolo.png",
+      "memberId": "278134"
+    },
+    {
       "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
       "checkTitles": false,
       "title": "codeshare.co.uk Blog",
@@ -78,7 +96,7 @@
       "title": "Umbraco HQ",
       "url": "https://umbraco.com/blog",
       "rss": "https://umbraco.com/blog/rss-feed/",
-      "logo": "https://our.umbraco.org/media/7514503/umbraco_logo_turquoise_transparent.png",
+      "logo": "https://our.umbraco.com/media/7514503/umbraco_logo_turquoise_transparent.png",
       "memberId": null
     },
     {
@@ -149,7 +167,7 @@
       "checkTitles": false,
       "title": "ZpqrtBnk - Software Ektropist",
       "url": "https://www.zpqrtbnk.net/",
-      "rss": "https://www.zpqrtbnk.net/rss",
+      "rss": "https://www.zpqrtbnk.net/rss/umbraco",
       "logo": "https://www.zpqrtbnk.net/img/zpqrtbnk/entropy2.png",
       "memberId": 6724
     },
@@ -213,7 +231,7 @@
       "title": "DotSee Blog",
       "url": "https://www.dot-see.com",
       "rss": "https://www.dot-see.com/en/blog/rss",
-      "logo": "https://www.dot-see.com/media/24590/dotsee.png",
+      "logo": "https://www.dot-see.com/media/24590/dotsee_logo_01.png",
       "memberId": 3185
     },
     {
@@ -222,7 +240,7 @@
       "title": "Perplex",
       "url": "https://www.perplex.nl/en/blog/umbraco",
       "rss": "https://www.perplex.nl/rss/en/blog/umbraco",
-      "logo": "https://scontent-bru2-1.xx.fbcdn.net/v/t1.0-1/p200x200/18301933_1704816986200741_8275590260623615358_n.jpg?oh=8e0135ffe88177980a0c6651a289e216&oe=5B1D527F",
+      "logo": "https://www.perplex.nl/media/gfx/logoperplex.png",
       "memberId": null
     },
     {
@@ -251,6 +269,33 @@
       "rss": "https://pstokes.co.uk/rss",
       "logo": "https://pstokes.co.uk/media/1017/img_2254-3.jpg",
       "memberId": 146507
+    },
+    {
+      "id": "97488df9-0f87-4748-b8cc-b68ca48b2030",
+      "checkTitles": false,
+      "title": "Owain Codes",
+      "url": "https://www.owain.codes/",
+      "rss": "https://www.owain.codes/blog/rss",
+      "logo": "https://www.owain.codes/media/1033/hoodie_front.png",
+      "memberId": 144571
+    },	
+    {
+      "id": "d4c4eaf6-203a-4968-8b99-e7191f9b4943",
+      "checkTitles": false,
+      "title": "Moriyama",
+      "url": "https://www.moriyama.co.uk/",
+      "rss": "https://www.moriyama.co.uk/rss",
+      "logo": "https://pbs.twimg.com/profile_images/1102892976446099456/ZZtbF02F_400x400.png",
+      "memberId": 1199
+    },
+	    {
+      "id": "40b25a24-8a8f-40f7-8271-5e855b76909a",
+      "checkTitles": false,
+      "title": "My Umbraco Adventures",
+      "url": "https://jvantroyen.blogspot.com/",
+      "rss": "http://jvantroyen.blogspot.com/feeds/posts/default",
+      "logo": "https://our.umbraco.com/media/upload/0e40926e-0884-42e4-abc4-ed72ab2f2c31/Jeroen%20Vantroyen.png?width=500&height=500&mode=crop&upscale=true",
+      "memberId": 274827
     }
   ]
 }

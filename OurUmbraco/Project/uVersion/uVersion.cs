@@ -1,53 +1,47 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
+using OurUmbraco.Our.Extensions;
+using OurUmbraco.Our.Services;
 using Umbraco.Core;
 
 namespace OurUmbraco.Project.uVersion
 {
     public class UVersion
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public bool Exists { get; set; }
+        public string Key { get; private set; }
+        public string Name { get; private set; }
 
-
-        public UVersion(string name)
+        public System.Version FullVersion { get; private set; }
+        
+        public IEnumerable<UVersion> GetAllVersions()
         {
-            XmlNode x = UVersionConfig.GetKeyAsNode("/configuration/versions/version [@voteName = '" + name + "']");
-            if (x != null) {
-                Name = x.Attributes.GetNamedItem("voteName").Value;
-                Description = x.Attributes.GetNamedItem("voteDescription").Value;
-                
-
-                
-                Exists = true;
-            } else
-                Exists = false;
-        }
-
-        public static List<UVersion> GetAllVersions()
-        {
-            XmlNode x = UVersionConfig.GetKeyAsNode("/configuration/versions");
-            var l = new List<UVersion>();
-            foreach (XmlNode cx in x.ChildNodes)
+            var releasesService = new ReleasesService();
+            var releases = releasesService.GetReleasesCache()
+                .Where(x => x.FullVersion.Major >= 6 && x.FullVersion.Build == 0 && x.Released)
+                .OrderByDescending(x => x.FullVersion).ToList();
+            
+            var versions = new List<UVersion>();
+            foreach (var release in releases)
             {
-                if (cx.Attributes != null && cx.Attributes.GetNamedItem("vote") != null && cx.Attributes.GetNamedItem("vote").Value == "true")
-                    if (cx.Attributes.GetNamedItem("voteName") != null)
-                        l.Add(new UVersion(cx.Attributes.GetNamedItem("voteName").Value));
+                versions.Add(new UVersion
+                {
+                    Name = release.FullVersion.VersionName(),
+                    Key = release.FullVersion.VersionKey(),
+                    FullVersion = release.FullVersion
+                });
             }
-
-            return l;
+            
+            return versions;
         }
 
-        public static IEnumerable<System.Version> GetAllAsVersions()
+        public IEnumerable<System.Version> GetAllAsVersions()
         {
-            var all = UVersion.GetAllVersions()
+            var versions = new UVersion();
+            var all = versions.GetAllVersions()
                 .Select(x => x.Name.Replace(".x", ""))
                 .Select(x =>
                 {
-                    System.Version v;
-                    return System.Version.TryParse(x, out v) ? v : null;
+                    return System.Version.TryParse(x, out var version) ? version : null;
                 })
                 .WhereNotNull()
                 .OrderByDescending(x => x);

@@ -62,7 +62,7 @@ namespace OurUmbraco.Documentation
             // set the context vars
             var httpContext = contentRequest.RoutingContext.UmbracoContext.HttpContext;
             httpContext.Items[MarkdownLogic.MarkdownPathKey] = mdFilepath;
-            httpContext.Items["topicTitle"] = string.Join(" - ", httpContext.Request.RawUrl
+            httpContext.Items["topicTitle"] = string.Join(" - ", httpContext.Request.Url.AbsolutePath
                 .Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)
                 .Skip(1)
                 .Reverse());
@@ -141,10 +141,10 @@ namespace OurUmbraco.Documentation
 
     public class Github
     {
-        public static string MarkdownFileLink()
+        public static string MarkdownFileEditLink()
         {
             string branchName = "master";
-            string baseUrl = "https://github.com/umbraco/UmbracoDocs/blob/" + branchName;
+            string baseUrl = "https://github.com/umbraco/UmbracoDocs/edit/" + branchName;
 
             var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
             
@@ -181,6 +181,23 @@ namespace OurUmbraco.Documentation
 
 
             return docUrl;
+        }
+
+        public static string GithubIssueString(string title = null)
+        {
+            var githubIssueLink = "https://github.com/umbraco/UmbracoDocs/issues/new";
+
+            var queryStringSeparator = "?";
+
+            if (title != null)
+            {
+                githubIssueLink = githubIssueLink + "?title=" + Uri.EscapeDataString(title);
+                queryStringSeparator = "&";
+            }
+
+            githubIssueLink = $"{githubIssueLink}{queryStringSeparator}body={Uri.EscapeDataString($"\n\n\n***This is the page with issues: {MarkdownFileEditLink()}***")}";
+
+            return githubIssueLink;
         }
 
         /// <summary>

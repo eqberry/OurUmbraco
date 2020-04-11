@@ -1,46 +1,64 @@
 Our Umbraco
-==========
+===========
 
-Complete source of the umbraco community site, our.umbraco.org. 
+Complete source of the Umbraco community site, [our.umbraco.com](https://our.umbraco.com).
 
-## Build in visual studio
-Make sure to allow NuGet Package Restore in VS (Tools > Options > Package Manager). The first buid of the project will take quite a while, be patient, it will finish at some point.
-Upon build a web.config file will be copied into the `OurUmbraco.Site` project which you can use in the following step.
+## Build in Visual Studio
+
+Make sure to allow NuGet Package Restore in VS (Tools > Options > Package Manager). The first build of the project will take quite a while, please be patient, it will finish at some point.
+Upon build a `web.config` file will be copied into the `OurUmbraco.Site` project which you can use in the following step.
 
 If you're working on the frontend (the js/css/etc parts in `~/OurUmbraco.Client`) then you can either run `~/build/BuildClientFiles.bat` to build them and have them copied into the site. Or if you have npm/gulp installed on your machine you can run the usual commands in the `~/OurUmbraco.Client` folder:
 
 ```
 npm install
-npm install -g install gulp -g
+npm install gulp -g
 gulp
 ```
 
-## Database restore
-Download the SQL Server Database from: http://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev.zip
+## Database Restore
 
-Restore the database to SQL Server 2012 SP2 (won't work on earlier version) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
+Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200107.7z.  If you don't have the 7zip utility installed you can download it from [7-zip.org](https://www.7-zip.org/) 
+
+Restore the database to SQL Server 2017 (won't work on earlier versions) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
+
+If your SQL Server instance has the 'containment' feature enabled you can use these credentials in your connection string:
+`user id=OurDevAnon;password=gQW435Jg32;`
 
 ## Logging in
+
 All users and members use the same password: Not_A_Real_Password
 
-To log in, try `root` / `Not_A_Real_Password` for the backoffice and `member423@non-existing-mail-provider.none` / `Not_A_Real_Password` for the frontend.
+* To log into the backoffice use  `root` / `Not_A_Real_Password`.
+
+* To log into the frontend use `member_login@umbraco.org` / `Not_A_Real_Password`. You will be logging as Sebastiaan from Umbraco HQ.  All other profile information is anonymous.
+
+⚠⚠⚠
+
+In the web.config you get when you first build the project, you will need to change the following appSetting, from true to false:
+
+```
+<add key="umbracoUseSSL" value="false" />
+```
+
+Additionally, you will need to set requireSSL in the `Web.Config` to **false** to be able to login to the frontend.
+
+```
+<authentication mode="Forms">
+    <forms requireSSL="false" name="yourAuthCookie" loginUrl="login.aspx" protection="All" path="/" slidingExpiration="true" timeout="525600" />
+</authentication>
+```
+
+⚠⚠⚠
 
 ## Projects Area
-If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco
 
-## Documentation area
-If the documentation area seems empty then that's because you need to download the documentation, look for the `documentationIndexer` in the Examine dashboard in the Developer section of Umbraco and Rebuild the index.  This will automatically download the latest documentation from github.
+If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco.
 
-## Syncing your fork with the original repository
-To sync your fork with this original one, you'll have to add the upstream url once:
+## Documentation Area
 
-	git remote add upstream git://github.com/umbraco/OurUmbraco.git
+If the documentation area seems empty then that's because you need to download the documentation, look for the `documentationIndexer` in the Examine dashboard in the Developer section of Umbraco and Rebuild the index. This will automatically download the latest documentation from GitHub.
 
-And then each time you want to get the changes:
+## Contributing
 
-	git fetch upstream
-	git rebase upstream/master
-
-Yes, this is a scary command line operation, don't you love it?! :-D
-
-(More info on how this works: http://robots.thoughtbot.com/post/5133345960/keeping-a-git-fork-updated)
+Please read our [Contributing Guidelines](CONTRIBUTING.md) to learn how you can get involved and help with the Umbraco community site.

@@ -80,16 +80,9 @@ namespace OurUmbraco.Our
 
         public static int GetProjectTotalDownloadCount(int projectId)
         {
-            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("select SUM(downloads) from [wikiFiles] where nodeId = @0", projectId);
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("select SUM(downloads) from [wikiFiles] where nodeId = @0 and [type]= 'package'", projectId);
             return result ?? 0;
         }
-
-        public static bool HasMemberDownloadedPackage(int memberId, int projectId)
-        {
-            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int>("select COUNT(*) from projectDownload where projectId = @0 and memberId = @1", projectId, memberId);
-            return result != 0;
-        }
-
 
         public static int GetReleaseDownloadCount(int projectId)
         {

@@ -43,6 +43,7 @@ namespace OurUmbraco.Our.GoogleOAuth
                 .UseSqlServerStorage(connectionString, options)
                 .UseConsole();
 
+        
             var dashboardOptions = new DashboardOptions { Authorization = new[] { new UmbracoAuthorizationFilter() } };
             app.UseHangfireDashboard("/hangfire", dashboardOptions);
             app.UseHangfireServer();
@@ -57,10 +58,17 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.UpdateVimeoVideos();
             scheduler.GetGitHubPullRequests();
             scheduler.RefreshKarmaStatistics();
+            scheduler.GenerateReleasesCache(null);
+            scheduler.UpdateGitHubIssues(null);
+            scheduler.UpdateAllIssues(null);
+            scheduler.GetAllGitHubLabels(null);
+            scheduler.AddCommentToAwaitingFeedbackIssues(null);
+            scheduler.AddCommentToUpForGrabsIssues(null);
+            scheduler.NotifyUnmergeablePullRequests(null);
+            scheduler.AddCommentToStateHQDiscussionIssues(null);
 
-            //Hangfire jobs for Google Maps aka Radar
-            var radarScheduler = new RadarHangfireJobs();
-            radarScheduler.FindSignals();
+            scheduler.CheckContributorBadge(null);
+            scheduler.GetNugetDownloads(null);
         }
     }
 }
